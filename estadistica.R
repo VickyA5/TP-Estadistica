@@ -1,17 +1,22 @@
-# k = replicaciones
 
-# Función para generar una muestra y calcular el intervalo de confianza utilizando el método del pivote
-generar_muestra_y_intervalo_pivote <- function(n, theta) {
-  # Generar muestra
+generar_muestra <- function (n, theta){
+  
   muestra <- rexp(n, rate = 2) + theta
   muestra <- muestra[muestra > theta]
-
-  promedio_muestra <- mean(muestra)
   
-  # Calcular intervalo de confianza utilizando el método del pivote (T1)
-  # ACA SERIA EL METODO CON 1 DE LOS 3 PIVOTES
+  return(muestra)
+}
+
+generar_intervalo_t1 <- function(n, promedio_muestra){
+  
   intervalo_t1 <- c(promedio_muestra - 1.959964 / (sqrt(n) * 2)  - 0.5, 
                     promedio_muestra + 1.959964 / (sqrt(n) * 2)  - 0.5)
+  
+  return(intervalo_t1)
+}
+
+# Guarda la cobertura y longitud
+generar_muestra_y_intervalo_pivote <- function(n, theta, muestra, intervalo_t1) {
   
   cobertura_t1 <- as.numeric(intervalo_t1[1] <= theta & theta <= intervalo_t1[2])
 #  cat(intervalo_t1[1]," - ",theta," - ",intervalo_t1[2],"\n")
@@ -22,19 +27,27 @@ generar_muestra_y_intervalo_pivote <- function(n, theta) {
 # Configuración de la simulación
 set.seed(123) # Para reproducibilidad
 k <- 5000
-resultados_pivote <- matrix(NA, nrow = k, ncol = 2)
-colnames(resultados_pivote) <- c("Longitud_T1", "Cobertura_T1")
+resultados_cobertura_longitud <- matrix(NA, nrow = k, ncol = 2)
+colnames(resultados_cobertura_longitud) <- c("Longitud_T1", "Cobertura_T1")
 
 # Realizar simulación
 for (i in 1:k) {
   for (n_valor in c(10, 30, 100, 1000)) {
     for (theta_valor in c(2, 5)) {
+      
+      muestra <- generar_muestra(n_valor, theta_valor)
+      promedio_muestra <- mean(muestra)
+      intervalo_t1 <- generar_intervalo_t1(n_valor,promedio_muestra)
       indices <- c(1,2) #(i - 1) * 8 + c(1, 2)
-      resultados_pivote[i , indices] <- generar_muestra_y_intervalo_pivote(n_valor, theta_valor)
-    }
+      resultados_cobertura_longitud[i , indices] <- generar_muestra_y_intervalo_pivote(n_valor, theta_valor, muestra, intervalo_t1)
+    
+      }
   }
 }
 
-# Resumen de los resultados del método del pivote
-resumen_resultados_pivote <- colMeans(resultados_pivote, na.rm = TRUE)
+# Resumen de los resultados con T1
+resumen_resultados_pivote <- colMeans(resultados_cobertura_longitud, na.rm = TRUE)
 print(resumen_resultados_pivote)
+
+#Guardo los intervalos para cada n:
+
