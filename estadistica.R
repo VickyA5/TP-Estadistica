@@ -5,20 +5,20 @@ generar_muestra_y_intervalo_pivote <- function(n, theta) {
   # Generar muestra
   muestra <- rexp(n, rate = 2) + theta
   muestra <- muestra[muestra > theta]
-  
+
   # Calcular estadísticas
   media_muestra <- mean(muestra)
   varianza_muestra <- var(muestra)
   
   # Calcular intervalo de confianza utilizando el método del pivote (T1)
   # ACA SERIA EL METODO CON 1 DE LOS 3 PIVOTES
-  t1 <- sqrt(n) * (media_muestra - theta) / sqrt(varianza_muestra)
   intervalo_t1 <- c(media_muestra - qnorm(0.975) * sqrt(varianza_muestra / n), 
                     media_muestra + qnorm(0.975) * sqrt(varianza_muestra / n))
   
-  cobertura_t1 <- as.numeric(theta >= intervalo_t1[1] & theta <= intervalo_t1[2])
+  cobertura_t1 <- as.numeric(intervalo_t1[1] <= theta & theta <= intervalo_t1[2])
+#  cat(intervalo_t1[1]," - ",theta," - ",intervalo_t1[2],"\n")
   
-  return(c(length(intervalo_t1), cobertura_t1))
+  return(c(intervalo_t1[2]-intervalo_t1[1], cobertura_t1))
 }
 
 # Configuración de la simulación
@@ -31,8 +31,8 @@ colnames(resultados_pivote) <- c("Longitud_T1", "Cobertura_T1")
 for (i in 1:k) {
   for (n_valor in c(10, 30, 100, 1000)) {
     for (theta_valor in c(2, 5)) {
-      indices <- (i - 1) * 8 + c(1, 2)
-      resultados_pivote[i, indices] <- generar_muestra_y_intervalo_pivote(n_valor, theta_valor)
+      indices <- c(1,2) #(i - 1) * 8 + c(1, 2)
+      resultados_pivote[i , indices] <- generar_muestra_y_intervalo_pivote(n_valor, theta_valor)
     }
   }
 }
