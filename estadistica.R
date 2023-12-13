@@ -6,14 +6,12 @@ generar_muestra_y_intervalo_pivote <- function(n, theta) {
   muestra <- rexp(n, rate = 2) + theta
   muestra <- muestra[muestra > theta]
 
-  # Calcular estadísticas
-  media_muestra <- mean(muestra)
-  varianza_muestra <- var(muestra)
+  promedio_muestra <- mean(muestra)
   
   # Calcular intervalo de confianza utilizando el método del pivote (T1)
   # ACA SERIA EL METODO CON 1 DE LOS 3 PIVOTES
-  intervalo_t1 <- c(media_muestra - qnorm(0.975) * sqrt(varianza_muestra / n), 
-                    media_muestra + qnorm(0.975) * sqrt(varianza_muestra / n))
+  intervalo_t1 <- c(promedio_muestra - 1.959964 / (sqrt(n) * 2)  - 0.5, 
+                    promedio_muestra + 1.959964 / (sqrt(n) * 2)  - 0.5)
   
   cobertura_t1 <- as.numeric(intervalo_t1[1] <= theta & theta <= intervalo_t1[2])
 #  cat(intervalo_t1[1]," - ",theta," - ",intervalo_t1[2],"\n")
