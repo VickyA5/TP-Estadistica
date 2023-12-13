@@ -15,6 +15,20 @@ generar_intervalo_t1 <- function(n, promedio_muestra){
   return(intervalo_t1)
 }
 
+generar_intervalo_t2 <- function(n, muestra){
+  
+  intervalo_t2 <- c(min(muestra) - qexp(0.95 , rate=2*n), min(muestra))
+  
+  return(intervalo_t2)
+}
+
+generar_intervalo_t3 <- function(n, muestra){
+  
+  intervalo_t3 <- c((sum(muestra) - qgamma(0.975, shape=n, scale=1/2)))/n, (sum(muestra) - qgamma(0.025, shape=n, scale=1/2))/n)
+  
+  return(intervalo_t3)
+}
+
 # Guarda la cobertura y longitud
 generar_muestra_y_intervalo_pivote <- function(n, theta, muestra, intervalo_t1) {
   
@@ -48,6 +62,4 @@ for (i in 1:k) {
 # Resumen de los resultados con T1
 resumen_resultados_pivote <- colMeans(resultados_cobertura_longitud, na.rm = TRUE)
 print(resumen_resultados_pivote)
-
-#Guardo los intervalos para cada n:
 
