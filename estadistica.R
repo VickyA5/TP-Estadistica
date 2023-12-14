@@ -33,8 +33,6 @@ generar_intervalo_t3 <- function(n, muestra){
 generar_muestra_y_intervalo_pivote <- function(n, theta, muestra, intervalo_t1) {
   
   cobertura_t1 <- as.numeric(intervalo_t1[1] <= theta & theta <= intervalo_t1[2])
-  #cat(intervalo_t1[1]," - ",theta," - ",intervalo_t1[2],"\n")
-  #cat(intervalo_t1[2]-intervalo_t1[1],"-",cobertura_t1,"\n")
   longitud <- intervalo_t1[2]-intervalo_t1[1]
   return(c(longitud,cobertura_t1))
 }
@@ -45,21 +43,21 @@ k <- 5000
 resultados_cobertura_longitud_t1 <- matrix(NA, nrow = k, ncol = 2)
 colnames(resultados_cobertura_longitud_t1) <- c("Longitud_T1", "Cobertura_T1")
 matriz_n_10_t_2 <- matrix(NA, nrow = k, ncol = 2)
-colnames(matriz_n_10_t_2) <- c("Longitud_T1", "Cobertura_T1")
+colnames(matriz_n_10_t_2) <- c("Longitud_T1 (n=10 / tita=2)", "Cobertura_T1 (n=10 / tita=2)")
 matriz_n_10_t_5 <- matrix(NA, nrow = k, ncol = 2)
-colnames(matriz_n_10_t_5) <- c("Longitud_T1", "Cobertura_T1")
+colnames(matriz_n_10_t_5) <- c("Longitud_T1 (n=10 / tita=2)", "Cobertura_T1 (n=10 / tita=2)")
 matriz_n_30_t_2 <- matrix(NA, nrow = k, ncol = 2)
-colnames(matriz_n_30_t_2) <- c("Longitud_T1", "Cobertura_T1")
+colnames(matriz_n_30_t_2) <- c("Longitud_T1 (n=30 / tita=2)", "Cobertura_T1 (n=30 / tita=2)")
 matriz_n_30_t_5 <- matrix(NA, nrow = k, ncol = 2)
-colnames(matriz_n_30_t_5) <- c("Longitud_T1", "Cobertura_T1")
+colnames(matriz_n_30_t_5) <- c("Longitud_T1 (n=30 / tita=2)", "Cobertura_T1 (n=30 / tita=2)")
 matriz_n_100_t_2 <- matrix(NA, nrow = k, ncol = 2)
-colnames(matriz_n_100_t_2) <- c("Longitud_T1", "Cobertura_T1")
+colnames(matriz_n_100_t_2) <- c("Longitud_T1 (n=100 / tita=2)", "Cobertura_T1 (n=100 / tita=2)")
 matriz_n_100_t_5 <- matrix(NA, nrow = k, ncol = 2)
-colnames(matriz_n_100_t_5) <- c("Longitud_T1", "Cobertura_T1")
+colnames(matriz_n_100_t_5) <- c("Longitud_T1 (n=100 / tita=2)", "Cobertura_T1 (n=100 / tita=2)")
 matriz_n_1000_t_2 <- matrix(NA, nrow = k, ncol = 2)
-colnames(matriz_n_1000_t_2) <- c("Longitud_T1", "Cobertura_T1")
+colnames(matriz_n_1000_t_2) <- c("Longitud_T1 (n=1000 / tita=2)", "Cobertura_T1 (n=1000 / tita=2)")
 matriz_n_1000_t_5 <- matrix(NA, nrow = k, ncol = 2)
-colnames(matriz_n_1000_t_5) <- c("Longitud_T1", "Cobertura_T1")
+colnames(matriz_n_1000_t_5) <- c("Longitud_T1 (n=1000 / tita=2)", "Cobertura_T1 (n=1000 / tita=2)")
 
 
 # Realizar simulación
@@ -70,36 +68,54 @@ for (i in 1:k) {
       muestra <- generar_muestra(n_valor, theta_valor)
       promedio_muestra <- mean(muestra)
       intervalo_t1 <- generar_intervalo_t1(n_valor,promedio_muestra)
+      intervalo_t2 <- generar_intervalo_t2(n_valor,promedio_muestra)
+      intervalo_t3 <- generar_intervalo_t3(n_valor,promedio_muestra)
       indices <- c(1,2) 
-      #cat("N: ",n_valor," - TITA: ",theta_valor,"\n")
       resultado_t1 <- generar_muestra_y_intervalo_pivote(n_valor, theta_valor, muestra, intervalo_t1)
-      resultados_cobertura_longitud_t1[i , indices] <- resultado_t1
-
+      resultado_t2 <- generar_muestra_y_intervalo_pivote(n_valor, theta_valor, muestra, intervalo_t2)
+      resultado_t3 <- generar_muestra_y_intervalo_pivote(n_valor, theta_valor, muestra, intervalo_t3)
+      
       if(n_valor == 10 && theta_valor == 2){
-        matriz_n_10_t_2[i,indices] <- resultado_t1
+        matriz_n_10_t_2_T1[i,indices] <- resultado_t1
+        matriz_n_10_t_2_T2[i,indices] <- resultado_t2
+        matriz_n_10_t_2_T3[i,indices] <- resultado_t3
       } else if(n_valor == 10 && theta_valor == 5){
-        matriz_n_10_t_5[i,indices] <- resultado_t1
+        matriz_n_10_t_5_T1[i,indices] <- resultado_t1
+        matriz_n_10_t_5_T2[i,indices] <- resultado_t2
+        matriz_n_10_t_5_T3[i,indices] <- resultado_t3
       } else if(n_valor == 30 && theta_valor == 2){
-        matriz_n_30_t_2[i,indices] <- resultado_t1
+        matriz_n_30_t_2_T1[i,indices] <- resultado_t1
+        matriz_n_30_t_2_T2[i,indices] <- resultado_t2
+        matriz_n_30_t_2_T3[i,indices] <- resultado_t3
       } else if(n_valor == 30 && theta_valor == 5){
-        matriz_n_30_t_5[i,indices] <- resultado_t1
+        matriz_n_30_t_5_T1[i,indices] <- resultado_t1
+        matriz_n_30_t_5_T2[i,indices] <- resultado_t2
+        matriz_n_30_t_5_T3[i,indices] <- resultado_t3
       } else if(n_valor == 100 && theta_valor == 2){
-        matriz_n_100_t_2[i,indices] <- resultado_t1
+        matriz_n_100_t_2_T1[i,indices] <- resultado_t1
+        matriz_n_100_t_2_T2[i,indices] <- resultado_t2
+        matriz_n_100_t_2_T3[i,indices] <- resultado_t3
       } else if(n_valor == 100 && theta_valor == 5){
-        matriz_n_100_t_5[i,indices] <- resultado_t1
+        matriz_n_100_t_5_T1[i,indices] <- resultado_t1
+        matriz_n_100_t_5_T2[i,indices] <- resultado_t2
+        matriz_n_100_t_5_T3[i,indices] <- resultado_t3
       } else if(n_valor == 1000 && theta_valor == 2){
-        matriz_n_1000_t_2[i,indices] <- resultado_t1
+        matriz_n_1000_t_2_T1[i,indices] <- resultado_t1
+        matriz_n_1000_t_2_T2[i,indices] <- resultado_t2
+        matriz_n_1000_t_2_T3[i,indices] <- resultado_t3
       } else if(n_valor == 1000 && theta_valor == 5){
-        matriz_n_1000_t_5[i,indices] <- resultado_t1
+        matriz_n_1000_t_5_T1[i,indices] <- resultado_t1
+        matriz_n_1000_t_5_T2[i,indices] <- resultado_t2
+        matriz_n_1000_t_5_T3[i,indices] <- resultado_t3
       }
     }
   }
-#  cat("\n")
 }
 
 
-# Resumen de los resultados con T1
-resumen_resultados_pivote_t1 <- colMeans(resultados_cobertura_longitud_t1, na.rm = TRUE)
+# Combinar las matrices por columnas
+matriz_combinada <- cbind(matriz_n_1000_t_5, matriz_n_1000_t_2,matriz_n_100_t_2,matriz_n_100_t_2,matriz_n_30_t_2,matriz_n_30_t_2,matriz_n_10_t_2,matriz_n_10_t_2)
+resumen_resultados_pivote_t1 <- colMeans(matriz_combinada, na.rm = TRUE)
 print(resumen_resultados_pivote_t1)
 
 
